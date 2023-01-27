@@ -1,33 +1,35 @@
 package util
 
 import (
-	"fmt"
+	"errors"
 	"io"
 	"os"
 )
 
-func ReadFile(path string) (res string, err error) {
+func ReadFile(path string) (res []byte, err error) {
+	if !IsFileExits(path) {
+		return nil, errors.New("File Not Exist")
+	}
 	file, err := os.Open(path)
 	defer file.Close()
 	//fileLength, err := file.Read([]byte{})
 
 	data := make([]byte, 64)
-
+	tmpData := make([]byte, 256)
 	for {
-		n, errRead := file.Read(data)
-		fmt.Println(n)
+		n, errRead := file.Read(tmpData)
 		if errRead == io.EOF {
 			break
 		}
-		fmt.Println(string(data[:n]))
+		tmpData = append(tmpData[:n], data...)
 	}
 
-	return "", nil
+	return tmpData, nil
 }
 
-func ReadFileAsBytes(path string) ([]byte, error) {
+func ReadFileAsString(path string) (string, error) {
 	res, err := ReadFile(path)
-	return []byte(res), err
+	return string(res), err
 }
 
 func IsFileExits(path string) bool {

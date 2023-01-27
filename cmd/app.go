@@ -3,12 +3,18 @@ package main
 import (
 	config2 "CustomServerTemplate/internal/config"
 	server2 "CustomServerTemplate/internal/server"
+	"CustomServerTemplate/pkg/util"
 	"fmt"
 	"log"
 )
 
 func main() {
-	fmt.Println("hi")
+	runApp()
+}
+
+func runApp() {
+	fmt.Println(util.ReadFileAsString("./web/index.html"))
+	fmt.Println("Server is going to start...")
 	config, err := config2.Initialize()
 	server := server2.New(config)
 	server.Start()
