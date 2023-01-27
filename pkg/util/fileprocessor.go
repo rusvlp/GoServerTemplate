@@ -15,16 +15,18 @@ func ReadFile(path string) (res []byte, err error) {
 	//fileLength, err := file.Read([]byte{})
 
 	data := make([]byte, 64)
-	tmpData := make([]byte, 256)
-	for {
+	tmpData := make([]byte, 64)
+	resLength := 0
+	for i := 1; ; i++ {
 		n, errRead := file.Read(tmpData)
+		resLength += n
 		if errRead == io.EOF {
 			break
 		}
-		tmpData = append(tmpData[:n], data...)
+		data = append(data, tmpData[:n]...)
 	}
 
-	return tmpData, nil
+	return data, nil
 }
 
 func ReadFileAsString(path string) (string, error) {

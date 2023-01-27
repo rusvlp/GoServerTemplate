@@ -1,6 +1,9 @@
 package server
 
-import "net/http"
+import (
+	"CustomServerTemplate/pkg/util"
+	"net/http"
+)
 
 func (server *APIServer) Index() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
@@ -10,22 +13,28 @@ func (server *APIServer) Index() http.HandlerFunc {
 
 func (server *APIServer) SendHello() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		/* Проверка запроса на корректный метод. Пока хз, надо ли это
-		if request.Method != http.MethodGet {
-			writer.WriteHeader(405)
+		pageValue, err := util.ReadFile("./web/index.html")
+		if err != nil {
+			writer.WriteHeader(404)
 			return
-		} */
-
-		//writer.Header().Set("Content-Type", "application/json")
+		}
 		writer.Header().Set("Content-Type", "text/html")
-		writer.Write([]byte(testPage))
+		writer.Write(pageValue)
 		return
 	}
 }
 
 func (server *APIServer) TestAPI() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
+		pageValue, err := util.ReadFile("./web/testApi.html")
+		if err != nil {
+			writer.WriteHeader(404)
+			return
+		}
 		writer.Header().Set("Content-Type", "text/html")
+		writer.Write(pageValue)
+		return
+
 	}
 }
 
