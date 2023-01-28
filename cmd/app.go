@@ -8,11 +8,11 @@ import (
 )
 
 func main() {
-	runApp()
+	sandbox()
 }
 
 func runApp() {
-	
+
 	fmt.Println("Server is going to start...")
 	config, err := config2.Initialize()
 	server := server2.New(config)

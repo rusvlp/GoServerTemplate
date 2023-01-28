@@ -1,38 +1,19 @@
 package server
 
 import (
-	"CustomServerTemplate/pkg/util"
 	"net/http"
 )
 
 func (server *APIServer) Index() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		// Тут нужно вернуть главную страницу
-	}
-}
-
-func (server *APIServer) SendHello() http.HandlerFunc {
-	return func(writer http.ResponseWriter, request *http.Request) {
-		pageValue, err := util.ReadFile("./web/index.html")
-		if err != nil {
-			writer.WriteHeader(404)
-			return
-		}
-		writer.Header().Set("Content-Type", "text/html")
-		writer.Write(pageValue)
+		SendHTML(writer, "./web/index.html")
 		return
 	}
 }
 
 func (server *APIServer) TestAPI() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		pageValue, err := util.ReadFile("./web/testApi.html")
-		if err != nil {
-			writer.WriteHeader(404)
-			return
-		}
-		writer.Header().Set("Content-Type", "text/html")
-		writer.Write(pageValue)
+		SendHTML(writer, "./web/testApi.html")
 		return
 
 	}
