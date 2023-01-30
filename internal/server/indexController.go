@@ -1,7 +1,9 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 )
 
 func (server *APIServer) Index() http.HandlerFunc {
@@ -16,6 +18,18 @@ func (server *APIServer) TestAPI() http.HandlerFunc {
 		SendHTML(writer, "./web/testApi.html")
 		return
 
+	}
+}
+
+func (server *APIServer) ParamTest() http.HandlerFunc {
+	return func(writer http.ResponseWriter, request *http.Request) {
+		id, err := strconv.Atoi(request.URL.Query().Get("id"))
+		if err != nil {
+			writer.WriteHeader(404)
+			return
+		}
+
+		fmt.Fprintf(writer, "Requested ID is: %d", id)
 	}
 }
 

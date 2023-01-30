@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	sandbox()
+	runApp()
 }
 
 func runApp() {
