@@ -13,13 +13,13 @@ func main() {
 
 func runApp() {
 
-	fmt.Println("Server is going to start...")
 	config, err := config2.Initialize()
+	fmt.Println("Server is going to start on port " + config.Port)
 	server := server2.New(config)
 	server.Start()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	// Логгер, которые журналирует в файл
+	// Логгер, который журналирует в файл
 }

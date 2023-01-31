@@ -33,6 +33,7 @@ func Initialize() (*Config, error) {
 	}
 
 	return config, nil
+
 }
 
 func (config *Config) checkConfigErrors() error {

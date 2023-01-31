@@ -14,5 +14,20 @@
         <input type = "text" name = "id" id = "id">
         <input type = "submit" value="submit">
     </form>
+
+    Check the path param get request handler
+
+    <label for = "id2">
+    <input type = "text" id = "id2">
+    <button onclick="pathParam()">Check it</button>
+
+    <script src = "">
+       
+        
+        function pathParam(){
+            id = document.querySelector("#id2").value
+            fetch("/pathParam/" + id)
+        }
+    </script>
 </body>
 </html>
