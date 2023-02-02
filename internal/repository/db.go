@@ -10,7 +10,7 @@ type Configurer interface {
 }
 
 type DB struct {
-	conDB          *sql.DB
+	ConDB          *sql.DB
 	config         *config.Config
 	userRepository *UserRepository
 }

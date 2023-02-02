@@ -20,6 +20,5 @@ func runApp() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	// Логгер, который журналирует в файл
 }
