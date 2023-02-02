@@ -3,12 +3,8 @@ package server
 import (
 	"CustomServerTemplate/internal/config"
 	"CustomServerTemplate/internal/repository"
-	"database/sql"
-	"flag"
-	"github.com/BurntSushi/toml"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
-	"log"
 	"net/http"
 )
 
@@ -35,7 +31,7 @@ func New(config *config.Config) *APIServer {
 }
 
 func (server *APIServer) Start() error {
-	testRep()
+	//testRep()
 	server.configureRouter()
 	err := server.configureDB()
 	if err != nil {
@@ -55,14 +51,14 @@ func (server *APIServer) configureDB() error {
 	return nil
 }
 
-func testRep() {
+/*func testRep() {
 	dbData := repository.DBData{}
 
 	flag.StringVar(&dbCfgPath, "dbcfg", "config/dbConfig.toml", "ss")
 	_, err := toml.DecodeFile(dbCfgPath, &dbData)
 	sqldatabase, err := sql.Open("mysql", "root:1234@/"+dbData.TableName)
 	database := repository.DB{}
-	database.ConDB = sqldatabase
+	database.conDB = sqldatabase
 
 	rep := &repository.UserRepository{}
 	rep.Configure(&database)
@@ -71,5 +67,8 @@ func testRep() {
 		log.Fatalln(err)
 	}
 
-	rep.Create(dbData)
-}
+	err = rep.Initialize(dbData)
+	if err != nil {
+		logrus.Error(err)
+	}
+} */

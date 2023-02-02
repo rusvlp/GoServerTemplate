@@ -3,6 +3,7 @@ package server
 import (
 	"CustomServerTemplate/internal/dto"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -13,7 +14,14 @@ func (s *APIServer) RegisterUser() http.HandlerFunc {
 		hw := HandleWrapper{writer: writer}
 		user := &dto.User{}
 		hw.fromJson(user, request)
-		hw.jsonResponse(user)
+		user, err := s.db.UserRepository.Create(user)
+		//hw.jsonResponse(user)
+		if err != nil {
+			http.Error(writer, "error creating user", http.StatusInternalServerError)
+			logrus.Error(err)
+		}
+		writer.WriteHeader(200)
+		fmt.Fprintf(writer, "Пользователь успешно создан! Username: %s, Passowrd: %s", user.Username, user.Password)
 		fmt.Println(user)
 	}
 }

@@ -13,9 +13,9 @@ type Configurer interface {
 }
 
 type DB struct {
-	ConDB          *sql.DB
+	conDB          *sql.DB
 	config         *config.Config
-	userRepository *UserRepository
+	UserRepository *UserRepository
 }
 
 func NewDB(config *config.Config) *DB {
