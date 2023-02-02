@@ -4,22 +4,28 @@ import (
 	config2 "CustomServerTemplate/internal/config"
 	server2 "CustomServerTemplate/internal/server"
 	"fmt"
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	runApp()
+	err := runApp()
+	if err != nil {
+		logrus.Error(err)
+	}
 }
 
-func runApp() {
+func runApp() error {
 
 	config, err := config2.Initialize()
+	if err != nil {
+		return err
+	}
 	fmt.Println("Server is going to start on port " + config.Port)
 	server := server2.New(config)
-	server.Start()
+	err = server.Start()
 	if err != nil {
-		log.Fatalln(err)
+		return err
 	}
-
+	return nil
 	// Логгер, который журналирует в файл
 }

@@ -29,10 +29,20 @@ func New(config *config.Config) *APIServer {
 
 func (server *APIServer) Start() error {
 	server.configureRouter()
+	err := server.configureDB()
+	if err != nil {
+		return err
+	}
 	return http.ListenAndServe(server.Config.Port, server.Router)
 }
 
 func (server *APIServer) configureDB() error {
-	server.db = repository.NewDB(server.Config)
+	db := repository.NewDB(server.Config)
+	err := db.Open()
+	if err != nil {
+		return err
+	}
+	server.db = db
+	server.db.CreateRepositories()
 	return nil
 }
