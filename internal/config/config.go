@@ -8,7 +8,10 @@ import (
 var configPath string
 
 type Config struct {
-	Port string `toml:"port"`
+	Port  string `toml:"port"`
+	DBURL string `toml:"dburl"`
+	/*DBUsername	string `toml:"dbusername""`
+	DBPassword 	string `toml:"dbpassword"` */
 }
 
 func new() *Config {

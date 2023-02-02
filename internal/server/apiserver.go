@@ -2,6 +2,7 @@ package server
 
 import (
 	"CustomServerTemplate/internal/config"
+	"CustomServerTemplate/internal/repository"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -16,6 +17,7 @@ type ctxKey int8
 type APIServer struct {
 	Config *config.Config
 	Router *mux.Router
+	db     *repository.DB
 }
 
 func New(config *config.Config) *APIServer {
@@ -28,4 +30,9 @@ func New(config *config.Config) *APIServer {
 func (server *APIServer) Start() error {
 	server.configureRouter()
 	return http.ListenAndServe(server.Config.Port, server.Router)
+}
+
+func (server *APIServer) configureDB() error {
+	server.db = repository.NewDB(server.Config)
+	return nil
 }
