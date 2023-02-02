@@ -12,6 +12,6 @@ func (s *APIServer) configureRouter() {
 	s.Router.HandleFunc("/pathParam/{id}", s.PathParamTest()).Methods(http.MethodGet)
 
 	// Методы для юзера
+	s.Router.HandleFunc("/register", s.SignUp()).Methods(http.MethodGet)
 	s.Router.HandleFunc("/register", s.RegisterUser()).Methods(http.MethodPost)
-
 }

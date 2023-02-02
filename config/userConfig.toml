@@ -1,3 +1,6 @@
+title = "TOML Example"
+[UserRepository]
+database = "123"
 schema_name = "user_"
 username_name = "username"
 password_name = "password"

@@ -20,7 +20,8 @@ type DB struct {
 
 func NewDB(config *config.Config) *DB {
 	return &DB{
-		config: config,
+		config:         config,
+		UserRepository: &UserRepository{},
 	}
 }
 

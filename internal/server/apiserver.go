@@ -8,8 +8,6 @@ import (
 	"net/http"
 )
 
-var dbCfgPath string
-
 const (
 	AdminRole          = "admin"
 	ctxKeyToken ctxKey = iota
@@ -32,11 +30,11 @@ func New(config *config.Config) *APIServer {
 
 func (server *APIServer) Start() error {
 	//testRep()
-	server.configureRouter()
 	err := server.configureDB()
 	if err != nil {
 		return err
 	}
+	server.configureRouter()
 	return http.ListenAndServe(server.Config.Port, server.Router)
 }
 
@@ -50,25 +48,3 @@ func (server *APIServer) configureDB() error {
 	server.db.CreateRepositories()
 	return nil
 }
-
-/*func testRep() {
-	dbData := repository.DBData{}
-
-	flag.StringVar(&dbCfgPath, "dbcfg", "config/dbConfig.toml", "ss")
-	_, err := toml.DecodeFile(dbCfgPath, &dbData)
-	sqldatabase, err := sql.Open("mysql", "root:1234@/"+dbData.TableName)
-	database := repository.DB{}
-	database.conDB = sqldatabase
-
-	rep := &repository.UserRepository{}
-	rep.Configure(&database)
-
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	err = rep.Initialize(dbData)
-	if err != nil {
-		logrus.Error(err)
-	}
-} */

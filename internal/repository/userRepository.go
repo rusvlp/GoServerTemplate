@@ -3,37 +3,46 @@ package repository
 import (
 	"CustomServerTemplate/internal/dto"
 	"database/sql"
+	"github.com/BurntSushi/toml"
+	"net/http"
+	"os"
 )
 
+const userConfig string = "config/userConfig.toml"
+
 type UserRepository struct {
-	db           *sql.DB
-	schemaName   string
-	usernameName string
-	passwordName string
+	db           *sql.DB `toml:"database"`
+	schemaName   string  `toml:"schema_name"`
+	usernameName string  `toml:"username_name"`
+	passwordName string  `toml:"password_name"`
 }
 
-func (ur *UserRepository) Configure(db *DB) {
-	ur.db = db.conDB
-}
-
-func (ur *UserRepository) Create(user *dto.User) (*dto.User, error) {
-	err := ur.db.QueryRow(
-		"INSERT INTO "+ur.schemaName+"("+ur.usernameName+", "+ur.passwordName+") VALUES ($1, $2);",
-		user.Username,
-		user.Password).Scan(&user.Id)
+func (repository *UserRepository) Configure(db *DB) {
+	repository.db = db.conDB
+	db.UserRepository = repository
+	user, _ := os.ReadFile(userConfig)
+	userString := string(user)
+	println(userString)
+	test := &UserRepository{}
+	_, err := toml.Decode(userString, test) // TODO: понять почему не работает
+	repository.schemaName = "user"
+	repository.usernameName = "username"
+	repository.passwordName = "password"
 	if err != nil {
-		return nil, err
+		return
 	}
-	return user, nil
 }
 
-func (ur *UserRepository) Initialize(data DBData) error {
-	_, err := ur.db.Exec("CREATE TABLE " + data.TableName + "(    PersonID int,\n    LastName varchar(255),\n    FirstName varchar(255),\n    Address varchar(255),\n    City varchar(255))")
-
-	if err != nil {
-		println(err.Error())
-		return err
-	}
-
+func (repository *UserRepository) Create(userData *dto.User) error {
+	repository.db.QueryRow(
+		"INSERT INTO " + repository.schemaName + "(" + repository.usernameName + ", " + repository.passwordName + ") VALUES (" +
+			userData.Username + ", " + userData.Password + ")")
 	return nil
+}
+
+func (repository *UserRepository) GetUserData(r *http.Request) *dto.User {
+	user := &dto.User{}
+	user.Username = r.Form.Get(repository.usernameName)
+	user.Password = r.Form.Get(repository.passwordName)
+	return user
 }

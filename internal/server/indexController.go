@@ -46,6 +46,13 @@ func (server *APIServer) PathParamTest() http.HandlerFunc {
 	}
 }
 
+func (server *APIServer) SignUp() http.HandlerFunc {
+	return func(writer http.ResponseWriter, request *http.Request) {
+		SendHTML(writer, "./web/userSignUp.html")
+		return
+	}
+}
+
 var testPage = "<html>" +
 	"<head></head>" +
 	"<body>" +
