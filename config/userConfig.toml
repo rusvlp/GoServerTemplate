@@ -1,6 +1,3 @@
-title = "TOML Example"
-[UserRepository]
-database = "123"
-schema_name = "user_"
+schema_name = "users"
 username_name = "username"
 password_name = "password"

@@ -29,6 +29,5 @@ func (s *APIServer) RegisterUser() http.HandlerFunc {
 		writer.WriteHeader(200)
 		fmt.Fprintf(writer, "Пользователь успешно создан! Username: %s, Passowrd: %s", user.Username, user.Password)
 		fmt.Println(user)
-		SendHTML(writer, "./web/index.html")
 	}
 }

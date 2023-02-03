@@ -4,43 +4,58 @@ import (
 	"CustomServerTemplate/internal/dto"
 	"database/sql"
 	"github.com/BurntSushi/toml"
+	"github.com/sirupsen/logrus"
 	"net/http"
-	"os"
 )
 
 const userConfig string = "config/userConfig.toml"
 
-type UserRepository struct {
+var instance *userRepository
+
+type userRepository struct {
 	db           *sql.DB `toml:"database"`
 	schemaName   string  `toml:"schema_name"`
 	usernameName string  `toml:"username_name"`
 	passwordName string  `toml:"password_name"`
 }
 
-func (repository *UserRepository) Configure(db *DB) {
-	repository.db = db.conDB
-	db.UserRepository = repository
-	user, _ := os.ReadFile(userConfig)
-	userString := string(user)
-	println(userString)
-	test := &UserRepository{}
-	_, err := toml.Decode(userString, test) // TODO: понять почему не работает
-	repository.schemaName = "user"
-	repository.usernameName = "username"
-	repository.passwordName = "password"
-	if err != nil {
-		return
+func NewUserRepository() *userRepository {
+	if instance == nil {
+		instance = &userRepository{}
+		userDto := &dto.UserRepositoryDto{}
+		_, err := toml.DecodeFile(userConfig, userDto)
+		if err != nil {
+			logrus.Error(err)
+			return nil
+		}
+		instance.constructWithDto(userDto)
 	}
+	return instance
 }
 
-func (repository *UserRepository) Create(userData *dto.User) error {
-	repository.db.QueryRow(
+func (repository *userRepository) Configure(db *DB) {
+	repository.db = db.conDB
+}
+
+func (repository *userRepository) constructWithDto(dto *dto.UserRepositoryDto) {
+	repository.schemaName = dto.SchemaName
+	repository.usernameName = dto.UsernameName
+	repository.passwordName = dto.PasswordName
+}
+
+func (repository *userRepository) Create(userData *dto.User) error {
+	row, err := repository.db.Exec(
 		"INSERT INTO " + repository.schemaName + "(" + repository.usernameName + ", " + repository.passwordName + ") VALUES (" +
 			userData.Username + ", " + userData.Password + ")")
+	if err != nil {
+		logrus.Error(err)
+	}
+	rowA, _ := row.RowsAffected()
+	println(rowA)
 	return nil
 }
 
-func (repository *UserRepository) GetUserData(r *http.Request) *dto.User {
+func (repository *userRepository) GetUserData(r *http.Request) *dto.User {
 	user := &dto.User{}
 	user.Username = r.Form.Get(repository.usernameName)
 	user.Password = r.Form.Get(repository.passwordName)
