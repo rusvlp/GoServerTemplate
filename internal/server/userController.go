@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -12,22 +11,19 @@ const userConfigPath string = "config/userConfig"
 
 func (s *APIServer) RegisterUser() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		//hw := HandleWrapper{writer: writer}
-		//user := &dto.User{}
-		//hw.fromJson(user, request)
+		// Варианты для JSON и WebForm
 
-		request.ParseForm()
-
-		user := s.db.UserRepository.GetUserData(request)
-		err := s.db.UserRepository.Create(user)
-
-		if err != nil {
+		if request.Method == http.MethodGet {
 			SendHTML(writer, "./web/userSignUp.html")
-			logrus.Error(err)
+		}
+		if request.Method == http.MethodPost {
+			err := s.Services.UserSrv.CreateForm(request)
+			if err != nil {
+				http.Error(writer, err.Error(), http.StatusInternalServerError)
+			}
+			writer.WriteHeader(200)
+			fmt.Fprintf(writer, "Пользователь успешно создан!")
 		}
 
-		writer.WriteHeader(200)
-		fmt.Fprintf(writer, "Пользователь успешно создан! Username: %s, Passowrd: %s", user.Username, user.Password)
-		fmt.Println(user)
 	}
 }

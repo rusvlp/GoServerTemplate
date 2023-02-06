@@ -15,7 +15,7 @@ type Configurer interface {
 type DB struct {
 	conDB          *sql.DB
 	config         *config.Config
-	UserRepository *userRepository
+	UserRepository *UserRepository
 }
 
 func NewDB(config *config.Config) *DB {
@@ -27,7 +27,7 @@ func NewDB(config *config.Config) *DB {
 
 func (db *DB) CreateRepositories() {
 	sl := []Configurer{
-		&userRepository{},
+		db.UserRepository,
 	}
 	for _, j := range sl {
 		j.Configure(db)

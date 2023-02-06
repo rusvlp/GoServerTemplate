@@ -3,61 +3,65 @@ package repository
 import (
 	"CustomServerTemplate/internal/dto"
 	"database/sql"
+	"fmt"
 	"github.com/BurntSushi/toml"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"strconv"
 )
 
 const userConfig string = "config/userConfig.toml"
 
-var instance *userRepository
-
-type userRepository struct {
-	db           *sql.DB `toml:"database"`
-	schemaName   string  `toml:"schema_name"`
-	usernameName string  `toml:"username_name"`
-	passwordName string  `toml:"password_name"`
+type UserRepositorySchema struct {
+	SchemaName   string `toml:"schema_name"`
+	UsernameName string `toml:"username_name"`
+	PasswordName string `toml:"password_name"`
 }
 
-func NewUserRepository() *userRepository {
-	if instance == nil {
-		instance = &userRepository{}
-		userDto := &dto.UserRepositoryDto{}
-		_, err := toml.DecodeFile(userConfig, userDto)
-		if err != nil {
-			logrus.Error(err)
-			return nil
-		}
-		instance.constructWithDto(userDto)
+type UserRepository struct {
+	db               *sql.DB `toml:"database"`
+	repositorySchema *UserRepositorySchema
+}
+
+func NewUserRepository() *UserRepository {
+	fmt.Println("User Repository Constructor is called")
+	instance := &UserRepository{}
+	userDto := &UserRepositorySchema{}
+	_, err := toml.DecodeFile(userConfig, userDto)
+	fmt.Println(userDto.SchemaName)
+	if err != nil {
+		logrus.Error(err)
+		return nil
 	}
+	instance.repositorySchema = userDto
+
 	return instance
 }
 
-func (repository *userRepository) Configure(db *DB) {
+func (repository *UserRepository) Configure(db *DB) {
 	repository.db = db.conDB
+
 }
 
-func (repository *userRepository) constructWithDto(dto *dto.UserRepositoryDto) {
-	repository.schemaName = dto.SchemaName
-	repository.usernameName = dto.UsernameName
-	repository.passwordName = dto.PasswordName
-}
+/*func (repository *UserRepository) constructWithDto(dto *UserRepositorySchema) {
+	repository.repositorySchema = dto
+} */
 
-func (repository *userRepository) Create(userData *dto.User) error {
+func (repository *UserRepository) Create(userData *dto.User) error {
 	row, err := repository.db.Exec(
-		"INSERT INTO " + repository.schemaName + "(" + repository.usernameName + ", " + repository.passwordName + ") VALUES (" +
-			userData.Username + ", " + userData.Password + ")")
+		"INSERT INTO " + repository.repositorySchema.SchemaName + "(" + repository.repositorySchema.UsernameName + ", " + repository.repositorySchema.PasswordName + ") VALUES (" + "'" +
+			userData.Username + "', " + "'" + userData.Password + "')")
 	if err != nil {
 		logrus.Error(err)
 	}
 	rowA, _ := row.RowsAffected()
-	println(rowA)
+	logrus.Info("User with username " + userData.Username + " created." + strconv.Itoa(int(rowA)) + " rows affected.")
 	return nil
 }
 
-func (repository *userRepository) GetUserData(r *http.Request) *dto.User {
+func (repository *UserRepository) GetUserData(r *http.Request) *dto.User {
 	user := &dto.User{}
-	user.Username = r.Form.Get(repository.usernameName)
-	user.Password = r.Form.Get(repository.passwordName)
+	user.Username = r.Form.Get(repository.repositorySchema.UsernameName)
+	user.Password = r.Form.Get(repository.repositorySchema.PasswordName)
 	return user
 }

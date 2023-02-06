@@ -3,6 +3,7 @@ package server
 import (
 	"CustomServerTemplate/internal/config"
 	"CustomServerTemplate/internal/repository"
+	"CustomServerTemplate/internal/services"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -16,9 +17,10 @@ const (
 type ctxKey int8
 
 type APIServer struct {
-	Config *config.Config
-	Router *mux.Router
-	db     *repository.DB
+	Config   *config.Config
+	Router   *mux.Router
+	db       *repository.DB
+	Services *services.Service
 }
 
 func New(config *config.Config) *APIServer {
@@ -35,7 +37,13 @@ func (server *APIServer) Start() error {
 		return err
 	}
 	server.configureRouter()
+	server.configureServices()
 	return http.ListenAndServe(server.Config.Port, server.Router)
+}
+
+func (server *APIServer) configureServices() {
+	server.Services = &services.Service{}
+	server.Services.Initialize(server.db)
 }
 
 func (server *APIServer) configureDB() error {

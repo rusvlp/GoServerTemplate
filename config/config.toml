@@ -1,2 +1,2 @@
 port = ":8081"
-dburl = "root:1234@tcp(127.0.0.1:3306)/test"
+dburl = "root:rusvlp123@tcp(127.0.0.1:3306)/backendTemplateDB"
