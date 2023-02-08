@@ -9,14 +9,14 @@ import (
 
 func (server *APIServer) Index() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		SendHTML(writer, "./web/index.html")
+		htmlResponse(writer, "./web/index.html")
 		return
 	}
 }
 
 func (server *APIServer) TestAPI() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		SendHTML(writer, "./web/testApi.html")
+		htmlResponse(writer, "./web/testApi.html")
 		return
 
 	}
@@ -48,7 +48,7 @@ func (server *APIServer) PathParamTest() http.HandlerFunc {
 
 func (server *APIServer) SignUp() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		SendHTML(writer, "./web/userSignUp.html")
+		htmlResponse(writer, "./web/userSignUp.html")
 		return
 	}
 }

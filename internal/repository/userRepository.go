@@ -63,5 +63,6 @@ func (repository *UserRepository) GetUserData(r *http.Request) *dto.User {
 	user := &dto.User{}
 	user.Username = r.Form.Get(repository.repositorySchema.UsernameName)
 	user.Password = r.Form.Get(repository.repositorySchema.PasswordName)
+
 	return user
 }

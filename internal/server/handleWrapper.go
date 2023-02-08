@@ -1,6 +1,7 @@
 package server
 
 import (
+	"CustomServerTemplate/pkg/util"
 	json "encoding/json"
 	"net/http"
 )
@@ -43,4 +44,15 @@ func (hw *HandleWrapper) toJson(v any) []byte {
 func (hw *HandleWrapper) jsonResponse(v any) {
 	hw.writer.Header().Set("Content-Type", "application/json")
 	hw.writer.Write(hw.toJson(v))
+}
+
+func (hw *HandleWrapper) htmlResponse(path string) {
+	pageValue, err := util.ReadFile(path)
+	if err != nil {
+		hw.writer.WriteHeader(404)
+		return
+	}
+	hw.writer.Header().Set("Content-Type", "text/html")
+	hw.writer.Write(pageValue)
+	return
 }
