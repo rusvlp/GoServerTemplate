@@ -59,6 +59,7 @@ func (repository *UserRepository) Create(userData *dto.User) error {
 	return nil
 }
 
+// Сюда воткнуть рефлексию
 func (repository *UserRepository) GetUserData(r *http.Request) *dto.User {
 	user := &dto.User{}
 	user.Username = r.Form.Get(repository.repositorySchema.UsernameName)

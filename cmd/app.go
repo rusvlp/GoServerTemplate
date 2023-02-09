@@ -4,14 +4,14 @@ import (
 	config2 "CustomServerTemplate/internal/config"
 	server2 "CustomServerTemplate/internal/server"
 	"fmt"
-	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	err := runApp()
+	reflectionTest()
+	/*err := runApp()
 	if err != nil {
 		logrus.Error(err)
-	}
+	} */
 }
 
 func runApp() error {

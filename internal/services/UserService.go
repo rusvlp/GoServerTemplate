@@ -11,7 +11,7 @@ type UserService struct {
 }
 
 func (service *UserService) CreateJSON(request *http.Request) (*dto.User, error) {
-
+	return nil, nil
 }
 
 func (service *UserService) CreateForm(request *http.Request) (*dto.User, error) {
@@ -21,9 +21,17 @@ func (service *UserService) CreateForm(request *http.Request) (*dto.User, error)
 	}
 
 	user := service.UserRepo.GetUserData(request)
-	err = service.UserRepo.Create(user)
+	err = service.CreateUser(user)
 	if err != nil {
 		return nil, err
 	}
 	return user, nil
+}
+
+func (service *UserService) CreateUser(user *dto.User) error {
+	err := service.UserRepo.Create(user)
+	if err != nil {
+		return err
+	}
+	return nil
 }

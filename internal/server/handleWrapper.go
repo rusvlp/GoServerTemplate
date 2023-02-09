@@ -56,3 +56,10 @@ func (hw *HandleWrapper) htmlResponse(path string) {
 	hw.writer.Write(pageValue)
 	return
 }
+
+//TODO: Парсер из формы под любую структуру
+
+/* func (hw *HandleWrapper) parseFromForm(v any, r *http.Request) {
+	fields : = util.GetFieldsOfStruct(v)
+
+} */
